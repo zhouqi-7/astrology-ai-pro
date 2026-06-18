@@ -152,7 +152,9 @@ This application is for **entertainment and educational purposes only**. All rea
 
 ## 📄 License
 
-[MIT License](LICENSE)
+**未经允许，禁止商用** · Commercial use prohibited without permission.
+
+All rights reserved. This project is for personal and educational use only. Any commercial use, reproduction, or distribution without prior written permission is strictly prohibited.
 
 ---
 
