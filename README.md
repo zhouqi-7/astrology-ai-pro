@@ -97,7 +97,50 @@ src/
 
 Themes persist in `localStorage` and apply instantly via CSS custom properties.
 
-## 📜 Data Sources
+## 🧭 Roadmap / 后续规划
+
+The project plans to expand into a **comprehensive Chinese metaphysics platform** covering the following modules:
+
+### 📖 Lu Ban's Book (鲁班书 / 鲁班经)
+> *Lu Ban Jing — The classic of Chinese carpentry, architecture, and talismanic arts.*
+
+Traditional craftsmen's manual attributed to Lu Ban (鲁班), the patron saint of Chinese builders. Content includes:
+- **Lu Ban Ruler** (鲁班尺) — Auspicious measurements for doors, windows, furniture with 8-color fortune markings (财/病/离/义/官/劫/害/吉)
+- **House Building Taboos** (营造禁忌) — Site selection, orientation, groundbreaking rituals, and beam-raising ceremonies
+- **Architectural Talismans** (镇宅符) — Protective charms to ward off evil spirits and harmonize dwelling energies
+- **Practical Spells** (实用符咒) — Traditional methods for stopping bleeding, removing fish bones, and curing common ailments
+- **"Loss of One Faculty" Legend** (缺一门) — The myth that practitioners of Lu Ban's magical arts must suffer a personal sacrifice
+
+### ✍️ Name Selection (起名 / 取名)
+> *Based on Bazi (八字)五行 analysis and Five Elements balance.*
+
+- **Five Elements Deficiency Analysis** (五行补缺) — Analyze the Wu Xing distribution in one's Bazi and recommend characters that supply missing elements
+- **Best Character Recommendation** (荐字) — Suggest Chinese characters ranked by element compatibility, stroke count auspiciousness, and phonetic harmony
+- **Da Yun Alignment** (大运配合) — Select names that align with current and upcoming 10-year fortune cycles
+- **Family Lineage Consideration** (辈分/家谱) — Respect generation names and family tree ordering
+- **Western Name Companion** (英文名搭配) — Suggest phonetically compatible English names
+
+### 🕐 Auspicious Timing (择吉 / 黄历)
+> *Chinese calendar-based lucky date/time selection.*
+
+- **Daily Auspiciousness** (每日宜忌) — Display what activities are recommended or discouraged for each day based on the Almanac (通书)
+- **Event-Based Selection** (事项择吉) — Find the best dates for wedding (嫁娶), moving (搬家), business opening (开业), travel (出行), construction (动土), burial (安葬)
+- **Hour Selection** (吉时) — Determine the most favorable 2-hour window within a day for specific activities
+- **Conflict Avoidance** (冲煞) — Identify zodiac animal conflicts and directional taboos for a given date
+- **Solar Term Integration** (节气) — Align with the 24 solar terms for agricultural and health-related timing
+
+### 🔮 Additional Modules / 其他模块
+
+| Module | Description |
+|--------|-------------|
+| **Face Reading** (面相) | Facial feature analysis based on traditional Chinese physiognomy |
+| **Palmistry** (手相) | Palm line interpretation integrated with Bazi elements |
+| **Zi Wei Dou Shu** (紫微斗数) | Complex star-based destiny analysis (advanced) |
+| **Qi Men Dun Jia** (奇门遁甲) | Strategic divination for business and life decisions |
+| **Dream Interpretation** (解梦) | Traditional Chinese dream symbolism and omens |
+| **I Ching Coin Divination** (金钱卦) | Classical 3-coin yarrow stalk divination method |
+
+> *These modules are under consideration for future development. Community contributions and suggestions are welcome!*
 
 - **Bazi calculation** — Based on traditional Chinese calendrical algorithms (五虎遁, 五鼠遁, 日柱 formula)
 - **Hexagram texts** — Derived from the *I Ching (Yi Jing / 易经)* and classical commentaries
