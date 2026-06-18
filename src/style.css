@@ -1,0 +1,179 @@
+:root {
+  --bg-primary: #1c1714;
+  --bg-secondary: #26201b;
+  --bg-card: rgba(38, 32, 27, 0.8);
+  --gold: #c49a4a;
+  --gold-light: #dbb85a;
+  --gold-dim: rgba(196, 154, 74, 0.1);
+  --teal: #6a9e8a;
+  --teal-dim: rgba(106, 158, 138, 0.1);
+  --text-primary: #e8ddd0;
+  --text-secondary: #a09282;
+  --text-muted: #6b5f52;
+  --border-gold: rgba(196, 154, 74, 0.15);
+  --border-teal: rgba(106, 158, 138, 0.15);
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-chinese: 'Noto Serif SC', 'SimSun', 'Songti SC', serif;
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --radius: 12px;
+
+  --accent-red: #c4665a;
+  --accent-green: #7a9e6a;
+  --accent-blue: #6a8eae;
+  --accent-yellow: #c9a84c;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-image:
+    radial-gradient(ellipse at 50% 0%, rgba(196, 154, 74, 0.03) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 50%, rgba(106, 158, 138, 0.02) 0%, transparent 50%);
+  min-height: 100vh;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(196, 154, 74, 0.012) 40px, rgba(196, 154, 74, 0.012) 41px),
+    repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(196, 154, 74, 0.012) 40px, rgba(196, 154, 74, 0.012) 41px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+#app {
+  position: relative;
+  z-index: 1;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(196, 154, 74, 0.15);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(196, 154, 74, 0.3);
+}
+
+::selection {
+  background: rgba(196, 154, 74, 0.25);
+  color: var(--text-primary);
+}
+
+/* ===== Element Plus 全局覆写 ===== */
+.el-select-dropdown,
+.el-popper,
+.el-dropdown-menu {
+  background: var(--el-bg-color-overlay) !important;
+  border-color: var(--el-border-color) !important;
+}
+
+.el-select-dropdown__item {
+  color: var(--el-text-color-regular) !important;
+}
+
+.el-select-dropdown__item.hover,
+.el-select-dropdown__item:hover {
+  background: var(--gold-dim) !important;
+}
+
+.el-select-dropdown__item.selected {
+  color: var(--gold) !important;
+  background: var(--gold-dim) !important;
+}
+
+.el-input-number__increase,
+.el-input-number__decrease {
+  background: var(--el-fill-color) !important;
+  color: var(--el-text-color-regular) !important;
+}
+
+.el-input-number__increase:hover,
+.el-input-number__decrease:hover {
+  background: var(--gold-dim) !important;
+  color: var(--gold) !important;
+}
+
+.el-radio {
+  color: var(--el-text-color-regular) !important;
+}
+
+.el-radio__inner {
+  border-color: var(--el-radio-input-border-color) !important;
+  background: var(--el-radio-input-bg-color) !important;
+}
+
+.el-radio.is-checked .el-radio__inner {
+  border-color: var(--el-radio-checked-border-color) !important;
+  background: var(--el-radio-checked-bg-color) !important;
+}
+
+.el-radio.is-checked .el-radio__label {
+  color: var(--el-radio-checked-text-color) !important;
+}
+
+.el-button {
+  transition: all 0.25s !important;
+}
+
+.el-button:not(.el-button--primary):not(.submit-btn):not(.cast-btn) {
+  background: var(--el-button-bg-color) !important;
+  border-color: var(--el-button-border-color) !important;
+  color: var(--el-button-text-color) !important;
+}
+
+.el-button:not(.el-button--primary):not(.submit-btn):not(.cast-btn):hover {
+  background: var(--el-button-hover-bg-color) !important;
+  border-color: var(--el-button-hover-border-color) !important;
+  color: var(--el-button-hover-text-color) !important;
+}
+
+.el-select .el-input__wrapper {
+  background: var(--el-input-bg-color) !important;
+  box-shadow: 0 0 0 1px var(--el-input-border-color) inset !important;
+}
+
+.el-select .el-input__wrapper:hover {
+  box-shadow: 0 0 0 1px var(--el-input-hover-border-color) inset !important;
+}
+
+.el-select .el-input__wrapper.is-focus {
+  box-shadow: 0 0 0 1px var(--el-input-focus-border-color) inset !important;
+}
+
+.el-input-number .el-input__wrapper {
+  background: var(--el-input-bg-color) !important;
+  box-shadow: 0 0 0 1px var(--el-input-border-color) inset !important;
+}
+
+.el-input-number .el-input__wrapper:hover {
+  box-shadow: 0 0 0 1px var(--el-input-hover-border-color) inset !important;
+}
+
+@media (max-width: 768px) {
+  html { font-size: 14px; }
+}
