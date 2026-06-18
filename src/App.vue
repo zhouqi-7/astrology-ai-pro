@@ -58,14 +58,22 @@ const themes = [
   { id: 'cool-dark', label: '冷色暗黑', color: '#58a6ff' },
   { id: 'sepia', label: '羊皮纸', color: '#b8863e' },
   { id: 'light', label: '极简亮色', color: '#b8963e' },
+  { id: 'ocean-teal', label: '深蓝青绿', color: '#61c1bd' },
+  { id: 'slate-red', label: '深蓝红灰', color: '#ca3032' },
+  { id: 'pink-lavender', label: '粉紫蓝调', color: '#af9dc0' },
+  { id: 'dark-contrast', label: '深色对比', color: '#63b8a7' },
+  { id: 'grey-blue-red', label: '灰蓝红', color: '#286181' },
+  { id: 'cream-orange', label: '米橙灰', color: '#ffbc99' },
+  { id: 'coral-yellow', label: '暖色系', color: '#fcc439' },
+  { id: 'green-blue', label: '绿蓝粉', color: '#279dd7' },
 ]
 
-const currentTheme = ref('warm-dark')
+const currentTheme = ref('dark-contrast')
 const showThemeMenu = ref(false)
 const themeRef = ref(null)
 
 function loadTheme() {
-  const saved = localStorage.getItem('astrology-theme') || 'warm-dark'
+  const saved = localStorage.getItem('astrology-theme') || 'dark-contrast'
   currentTheme.value = saved
   document.documentElement.setAttribute('data-theme', saved)
 }
