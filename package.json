@@ -1,7 +1,9 @@
 {
   "name": "astrology-ai-pro",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "description": "AI-powered Chinese astrology platform — 八字排盘, 梅花易数, 五行分析, 大运流年, 起名择吉, 鲁班尺",
+  "keywords": ["八字", "梅花易数", "命理", "Bazi", "Chinese Astrology", "I Ching", "Plum Blossom Divination", "紫微斗数", "易经", "五行", "排盘", "AI命理", "择吉", "起名"],
   "type": "module",
   "scripts": {
     "dev": "vite",
