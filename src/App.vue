@@ -16,6 +16,18 @@
             <el-icon><MagicStick /></el-icon>
             <span>梅花易数</span>
           </router-link>
+          <router-link to="/qimen" class="nav-link" active-class="nav-link-active">
+            <el-icon><Guide /></el-icon>
+            <span>奇门遁甲</span>
+          </router-link>
+          <router-link to="/liuren" class="nav-link" active-class="nav-link-active">
+            <el-icon><Coin /></el-icon>
+            <span>大六壬</span>
+          </router-link>
+          <router-link to="/taiyi" class="nav-link" active-class="nav-link-active">
+            <el-icon><Star /></el-icon>
+            <span>太乙神数</span>
+          </router-link>
         </div>
       </div>
       <div class="nav-right">

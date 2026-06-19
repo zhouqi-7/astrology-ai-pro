@@ -245,6 +245,7 @@
       <el-icon><Back /></el-icon>
       返回首页
     </el-button>
+    <TheoryInfo title="八字命理" :sections="baziTheory" :sources="baziSources" />
   </div>
 </template>
 
@@ -255,6 +256,16 @@ import SectionCard from '@/components/SectionCard.vue'
 import BaziChart from '@/components/BaziChart.vue'
 import FiveElements from '@/components/FiveElements.vue'
 import DaYunTimeline from '@/components/DaYunTimeline.vue'
+import TheoryInfo from '@/components/TheoryInfo.vue'
+
+const baziTheory = [
+  { heading: '历史渊源', lines: ['八字命理起源于汉代，成熟于宋代徐子平《渊海子平》，后世《三命通会》《滴天髓》《穷通宝鉴》等经典不断完善。'] },
+  { heading: '四柱推算法则', lines: ['年柱以立春为界（solarlunar库内置此规则）。', '月柱以节气为界，用五虎遁定天干（甲己之年丙作首，乙庚之岁戊为头...）。', '日柱以1900年1月1日庚子日为基准推算。', '时柱以日干定子时天干，用五鼠遁（甲己还加甲，乙庚丙作初...）。'] },
+  { heading: '十神体系', lines: ['以日干为"我"，与其他天干的关系定义十神（比肩、劫财、食神、伤官、偏财、正财、偏官、正官、偏印、正印），反映社会人际关系与五行生克。'] },
+  { heading: '五行旺衰', lines: ['根据四柱天干地支及藏干的五行分布评分，计算木火土金水的权重，判断命局平衡与喜用神。'] },
+  { heading: '大运与流年', lines: ['十年一大运，根据年干阴阳与性别定顺逆排布。流年即当年干支与命局的动态互动，用于推算每年的吉凶应期。'] },
+]
+const baziSources = ['徐子平《渊海子平》', '万民英《三命通会》', '《滴天髓》（相传刘基注）', '沈孝瞻《子平真诠》', '余春台《穷通宝鉴》']
 
 const router = useRouter()
 const data = ref(null)

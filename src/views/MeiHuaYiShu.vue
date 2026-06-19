@@ -123,12 +123,22 @@
     <div class="page-footer">
       <p class="footer-note">梅花易数由北宋邵雍（邵康节）创立，以"象数易"为核心，灵活简便，重象轻爻。</p>
     </div>
+    <TheoryInfo title="梅花易数" :sections="meihuaTheory" :sources="meihuaSources" />
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import SectionCard from '@/components/SectionCard.vue'
+import TheoryInfo from '@/components/TheoryInfo.vue'
+
+const meihuaTheory = [
+  { heading: '历史渊源', lines: ['北宋邵雍（邵康节）所创，载于《梅花易数》与《皇极经世》。相传邵雍观梅占雀，以卦象断吉凶，由此得名。'] },
+  { heading: '起卦法则', lines: ['以三个数字分别计算上卦、下卦、动爻。数字与八卦对应：1乾☰ 2兑☱ 3离☲ 4震☳ 5巽☴ 6坎☵ 7艮☶ 8坤☷，模8取卦；动爻模6取爻。'] },
+  { heading: '体用生克', lines: ['本卦中无动爻之卦为体卦（代表主方），有动爻之卦为用卦（代表客方）。体用生克关系决定吉凶趋势：体克用吉，用克体凶，体生用泄，用生体吉。'] },
+  { heading: '八卦类象', lines: ['乾(天/父/君)、兑(泽/少女/口)、离(火/中女/目)、震(雷/长男/足)、巽(风/长女/股)、坎(水/中男/耳)、艮(山/少男/手)、坤(地/母/腹)。'] },
+]
+const meihuaSources = ['邵雍《梅花易数》', '邵雍《皇极经世》', '《周易》（《易经》卦爻辞）']
 
 const num1 = ref(3)
 const num2 = ref(8)
