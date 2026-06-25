@@ -56,6 +56,7 @@
           <el-form-item label="出生时辰">
             <div class="shichen-grid">
               <button v-for="(sc, i) in shiChenList" :key="i"
+                type="button"
                 class="shichen-btn"
                 :class="{ active: form.hourIndex === i }"
                 @click="form.hourIndex = i">

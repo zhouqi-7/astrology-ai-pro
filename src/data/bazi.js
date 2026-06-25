@@ -1,3 +1,5 @@
+import solarLunar from 'solarlunar'
+
 const TIAN_GAN = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸']
 const DI_ZHI = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥']
 const SHENG_XIAO = ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪']
@@ -181,10 +183,27 @@ function calcWuXingStat(pillars) {
 
 export function calculateBazi({ year, month, day, hour, gender, location }) {
   const hourIdx = getHourIndex(hour)
-  const yearGZ = getYearGZ(year)
-  const monthGZ = getMonthGZ(yearGZ.gan, month - 1)
-  const dayGZ = getDayGZ(year, month, day)
-  const hourGZ = getHourGZ(dayGZ.gan, hourIdx)
+
+  let yearGZ, monthGZ, dayGZ, hourGZ
+  try {
+    const solarInfo = solarLunar.solar2lunar(year, month, day)
+    if (solarInfo) {
+      yearGZ = { gan: solarInfo.gzYear[0], zhi: solarInfo.gzYear[1] }
+      monthGZ = { gan: solarInfo.gzMonth[0], zhi: solarInfo.gzMonth[1] }
+      dayGZ = { gan: solarInfo.gzDay[0], zhi: solarInfo.gzDay[1] }
+      const dayGanIndex = TIAN_GAN.indexOf(dayGZ.gan)
+      const hourGZStr = solarLunar.getShiChen(hour, dayGanIndex)
+      hourGZ = { gan: hourGZStr[0], zhi: hourGZStr[1], hourIndex: hourIdx }
+    }
+  } catch (e) {
+    // fallback below
+  }
+  if (!yearGZ) {
+    yearGZ = getYearGZ(year)
+    monthGZ = getMonthGZ(yearGZ.gan, month - 1)
+    dayGZ = getDayGZ(year, month, day)
+    hourGZ = getHourGZ(dayGZ.gan, hourIdx)
+  }
 
   const pillars = [
     { name: '年柱', ...yearGZ, cangGan: getZhiCangGan(yearGZ.zhi) },
