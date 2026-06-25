@@ -40,84 +40,85 @@
       </div>
     </div>
 
-    <!-- 卦象结果 -->
     <div class="result-section" v-if="result">
-      <SectionCard :title="'【' + result.hexagram.name + '】' + result.hexagram.title" icon="䷀">
-        <div class="hexagram-display">
-          <div class="trigram-group">
-            <div class="trigram-label">本卦 · {{ result.hexagram.name }}</div>
-            <div class="hexagram-lines">
-              <div v-for="(line, i) in result.hexagram.lines" :key="i"
-                class="hex-line"
-                :class="{ moving: i === result.movingYao, yang: line === 1, yin: line === 0 }"
-                :style="{ '--i': i }"
-                @click="toggleYao(i)">
-                <span class="line-num">{{ 6 - i }}</span>
-                <span class="line-bar">
-                  <span v-if="line === 1" class="bar yang-bar">
-                    <span class="bar-seg" /><span class="bar-seg" />
+      <el-tabs class="result-tabs" v-model="activeTab">
+        <el-tab-pane label="卦象" name="hexagram">
+          <div class="hexagram-display">
+            <div class="trigram-group">
+              <div class="trigram-label">本卦 · {{ result.hexagram.name }}</div>
+              <div class="hexagram-lines">
+                <div v-for="(line, i) in result.hexagram.lines" :key="i"
+                  class="hex-line"
+                  :class="{ moving: i === result.movingYao, yang: line === 1, yin: line === 0 }"
+                  :style="{ '--i': i }"
+                  @click="toggleYao(i)">
+                  <span class="line-num">{{ 6 - i }}</span>
+                  <span class="line-bar">
+                    <span v-if="line === 1" class="bar yang-bar">
+                      <span class="bar-seg" /><span class="bar-seg" />
+                    </span>
+                    <span v-else class="bar yin-bar">
+                      <span class="bar-seg" /><span class="bar-gap" /><span class="bar-seg" />
+                    </span>
                   </span>
-                  <span v-else class="bar yin-bar">
-                    <span class="bar-seg" /><span class="bar-gap" /><span class="bar-seg" />
-                  </span>
-                </span>
-                <span v-if="i === result.movingYao" class="moving-badge">动</span>
+                  <span v-if="i === result.movingYao" class="moving-badge">动</span>
+                </div>
+              </div>
+            </div>
+            <div class="trigram-meta">
+              <div class="trigram-info">
+                <span class="info-key">上卦：</span>
+                <span class="info-val">{{ result.upperTrigram.symbol }} {{ result.upperTrigram.name }} ({{ result.upperTrigram.nature }})</span>
+              </div>
+              <div class="trigram-info">
+                <span class="info-key">下卦：</span>
+                <span class="info-val">{{ result.lowerTrigram.symbol }} {{ result.lowerTrigram.name }} ({{ result.lowerTrigram.nature }})</span>
+              </div>
+              <div class="trigram-info">
+                <span class="info-key">动爻：</span>
+                <span class="info-val moving">第{{ 6 - result.movingYao }}爻动</span>
               </div>
             </div>
           </div>
-          <div class="trigram-meta">
-            <div class="trigram-info">
-              <span class="info-key">上卦：</span>
-              <span class="info-val">{{ result.upperTrigram.symbol }} {{ result.upperTrigram.name }} ({{ result.upperTrigram.nature }})</span>
-            </div>
-            <div class="trigram-info">
-              <span class="info-key">下卦：</span>
-              <span class="info-val">{{ result.lowerTrigram.symbol }} {{ result.lowerTrigram.name }} ({{ result.lowerTrigram.nature }})</span>
-            </div>
-            <div class="trigram-info">
-              <span class="info-key">动爻：</span>
-              <span class="info-val moving">第{{ 6 - result.movingYao }}爻动</span>
-            </div>
-          </div>
-        </div>
 
-        <div class="yao-detail" v-if="showYaoDetail">
-          <p>{{ result.yaoText }}</p>
-        </div>
-      </SectionCard>
+          <div class="yao-detail" v-if="showYaoDetail">
+            <p>{{ result.yaoText }}</p>
+          </div>
+        </el-tab-pane>
 
-      <SectionCard title="卦象解读" icon="📜">
-        <div class="reading-content">
-          <div class="reading-block">
-            <h3 class="block-title">卦辞</h3>
-            <p>{{ result.hexagram.judgment }}</p>
+        <el-tab-pane label="解读" name="reading">
+          <div class="reading-content">
+            <div class="reading-block">
+              <h3 class="block-title">卦辞</h3>
+              <p>{{ result.hexagram.judgment }}</p>
+            </div>
+            <div class="reading-block">
+              <h3 class="block-title">彖传</h3>
+              <p>{{ result.hexagram.tuan }}</p>
+            </div>
+            <div class="reading-block">
+              <h3 class="block-title">大象</h3>
+              <p>{{ result.hexagram.daxiang }}</p>
+            </div>
+            <div class="reading-block highlight-block">
+              <h3 class="block-title">⚡ 动爻启示</h3>
+              <p>{{ result.yaoInterpretation }}</p>
+            </div>
           </div>
-          <div class="reading-block">
-            <h3 class="block-title">彖传</h3>
-            <p>{{ result.hexagram.tuan }}</p>
-          </div>
-          <div class="reading-block">
-            <h3 class="block-title">大象</h3>
-            <p>{{ result.hexagram.daxiang }}</p>
-          </div>
-          <div class="reading-block highlight-block">
-            <h3 class="block-title">⚡ 动爻启示</h3>
-            <p>{{ result.yaoInterpretation }}</p>
-          </div>
-        </div>
-      </SectionCard>
+        </el-tab-pane>
 
-      <SectionCard title="综合建议" icon="💡">
-        <div class="advice-content">
-          <p class="advice-text">{{ result.advice }}</p>
-          <div class="advice-tags">
-            <span class="advice-tag" :class="result.overall.trend">
-              {{ result.overall.label }}
-            </span>
-            <span class="advice-tag direction">{{ result.overall.direction }}</span>
+        <el-tab-pane label="建议" name="advice">
+          <div class="advice-content">
+            <p class="advice-text">{{ result.advice }}</p>
+            <div class="advice-tags">
+              <span class="advice-tag" :class="result.overall.trend">
+                {{ result.overall.label }}
+              </span>
+              <span class="advice-tag direction">{{ result.overall.direction }}</span>
+            </div>
           </div>
-        </div>
-      </SectionCard>
+        </el-tab-pane>
+      </el-tabs>
     </div>
 
     <div class="page-footer">
@@ -129,7 +130,6 @@
 
 <script setup>
 import { ref } from 'vue'
-import SectionCard from '@/components/SectionCard.vue'
 import TheoryInfo from '@/components/TheoryInfo.vue'
 
 const meihuaTheory = [
@@ -146,6 +146,7 @@ const num3 = ref(6)
 
 const result = ref(null)
 const showYaoDetail = ref(false)
+const activeTab = ref('hexagram')
 
 function toggleYao(i) {
   if (i === result.value?.movingYao) {
@@ -610,6 +611,7 @@ function applyPreset(p) {
 
 function castDivination() {
   showYaoDetail.value = false
+  activeTab.value = 'hexagram'
   const upperIdx = ((num1.value - 1) % 8) + 1
   const lowerIdx = ((num2.value - 1) % 8) + 1
   const movingYao = ((num3.value - 1) % 6)
@@ -660,18 +662,18 @@ function castDivination() {
 .meihua {
   max-width: 800px;
   margin: 0 auto;
-  padding: 0 24px 80px;
+  padding: 0 24px 40px;
   overflow-x: hidden;
 }
 
 .page-hero {
   text-align: center;
-  padding: 56px 24px 40px;
+  padding: 28px 24px 16px;
   position: relative;
 }
 
 .hero-bg {
-  font-size: 180px;
+  font-size: 120px;
   opacity: 0.04;
   position: absolute;
   top: 50%;
@@ -683,7 +685,7 @@ function castDivination() {
 
 .hero-title {
   font-family: var(--font-chinese);
-  font-size: 42px;
+  font-size: 28px;
   font-weight: 900;
   background: linear-gradient(135deg, var(--gold), var(--teal));
   -webkit-background-clip: text;
@@ -691,11 +693,11 @@ function castDivination() {
   background-clip: text;
   letter-spacing: 6px;
   position: relative;
-  margin-bottom: 12px;
+  margin-bottom: 6px;
 }
 
 .hero-desc {
-  font-size: 15px;
+  font-size: 13px;
   color: var(--text-secondary);
   letter-spacing: 2px;
 }
@@ -703,7 +705,7 @@ function castDivination() {
 .form-section {
   display: flex;
   justify-content: center;
-  margin-bottom: 28px;
+  margin-bottom: 16px;
 }
 
 .form-card {
@@ -712,38 +714,38 @@ function castDivination() {
   background: var(--bg-card);
   backdrop-filter: blur(20px);
   border: 1px solid var(--border-gold);
-  border-radius: 16px;
-  padding: 32px 36px;
+  border-radius: 12px;
+  padding: 16px 20px;
   box-shadow: var(--shadow-card);
 }
 
 .form-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding-bottom: 16px;
-  margin-bottom: 12px;
+  gap: 8px;
+  padding-bottom: 10px;
+  margin-bottom: 8px;
   border-bottom: 1px solid var(--border-gold);
   font-family: var(--font-chinese);
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--gold);
 }
 
-.form-icon { font-size: 22px; }
+.form-icon { font-size: 18px; }
 
 .form-hint {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-secondary);
-  margin-bottom: 20px;
-  line-height: 1.6;
+  margin-bottom: 12px;
+  line-height: 1.5;
 }
 
 .num-inputs {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 8px;
+  margin-bottom: 12px;
   min-width: 0;
 }
 
@@ -752,19 +754,19 @@ function castDivination() {
 }
 
 .num-inputs :deep(.el-input-number .el-input__wrapper) {
-  padding-left: 8px;
-  padding-right: 8px;
+  padding-left: 6px;
+  padding-right: 6px;
 }
 
 .num-inputs :deep(.el-input-number .el-input__inner) {
-  padding-left: 4px;
-  padding-right: 4px;
+  padding-left: 2px;
+  padding-right: 2px;
   text-align: center;
 }
 
 .num-inputs :deep(.el-input-number__increase),
 .num-inputs :deep(.el-input-number__decrease) {
-  width: 24px;
+  width: 22px;
 }
 
 .num-inputs :deep(.el-form-item) {
@@ -778,8 +780,8 @@ function castDivination() {
 
 .cast-btn {
   width: 100%;
-  height: 50px;
-  font-size: 16px;
+  height: 40px;
+  font-size: 15px;
   font-weight: 600;
   letter-spacing: 2px;
   background: var(--cast-bg);
@@ -797,33 +799,41 @@ function castDivination() {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 20px;
-  padding-top: 16px;
+  gap: 6px;
+  margin-top: 12px;
+  padding-top: 10px;
   border-top: 1px solid var(--border-gold);
 }
 
 .preset-label {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-muted);
 }
 
 .result-section {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
   min-width: 0;
 }
 
-.result-section > .section-card:first-child {
-  grid-column: 1 / -1;
+.result-tabs :deep(.el-tabs__header) {
+  margin: 0 0 8px;
 }
 
-/* 卦象显示 */
+.result-tabs :deep(.el-tabs__nav-wrap) {
+  margin-bottom: 0;
+}
+
+.result-tabs :deep(.el-tabs__item) {
+  font-family: var(--font-chinese);
+  font-size: 14px;
+  height: 36px;
+  line-height: 36px;
+  padding: 0 12px;
+}
+
 .hexagram-display {
   display: flex;
   align-items: flex-start;
-  gap: 32px;
+  gap: 24px;
   flex-wrap: wrap;
   min-width: 0;
 }
@@ -834,9 +844,9 @@ function castDivination() {
 
 .trigram-label {
   font-family: var(--font-chinese);
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-secondary);
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   text-align: center;
   letter-spacing: 1px;
 }
@@ -844,17 +854,17 @@ function castDivination() {
 .hexagram-lines {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
   min-width: 0;
 }
 
 .hex-line {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   cursor: default;
   transition: all 0.3s;
-  padding: 2px 0;
+  padding: 1px 0;
   min-width: 0;
 }
 
@@ -865,35 +875,35 @@ function castDivination() {
 .hex-line.moving:hover {
   background: rgba(196, 154, 74, 0.06);
   border-radius: 4px;
-  padding: 2px 4px;
+  padding: 1px 4px;
   margin: 0 -4px;
 }
 
 .line-num {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-muted);
-  width: 14px;
+  width: 12px;
   text-align: right;
 }
 
 .line-bar {
   display: flex;
   align-items: center;
-  height: 20px;
+  height: 18px;
 }
 
 .bar {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   flex-shrink: 1;
   min-width: 0;
 }
 
 .bar-seg {
-  width: 36px;
+  width: 32px;
   max-width: 14vw;
-  height: 6px;
+  height: 5px;
   border-radius: 3px;
   background: var(--text-primary);
   transition: background 0.3s;
@@ -905,26 +915,26 @@ function castDivination() {
 }
 
 .bar-gap {
-  width: 8px;
+  width: 6px;
   flex-shrink: 0;
 }
 
 .moving-badge {
-  font-size: 10px;
-  padding: 1px 6px;
+  font-size: 9px;
+  padding: 1px 5px;
   border-radius: 4px;
   background: rgba(196, 154, 74, 0.2);
   color: var(--gold);
   font-weight: 700;
-  margin-left: 4px;
+  margin-left: 2px;
 }
 
 .trigram-meta {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding-top: 8px;
+  gap: 6px;
+  padding-top: 4px;
   min-width: 0;
   overflow-wrap: break-word;
   word-break: break-word;
@@ -933,8 +943,8 @@ function castDivination() {
 .trigram-info {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 15px;
+  gap: 4px;
+  font-size: 14px;
   flex-wrap: wrap;
   min-width: 0;
 }
@@ -957,8 +967,8 @@ function castDivination() {
 }
 
 .yao-detail {
-  margin-top: 20px;
-  padding: 16px 20px;
+  margin-top: 12px;
+  padding: 12px 16px;
   background: var(--gold-dim);
   border-radius: 8px;
   border: 1px solid var(--border-gold);
@@ -966,21 +976,20 @@ function castDivination() {
 
 .yao-detail p {
   font-family: var(--font-chinese);
-  font-size: 15px;
+  font-size: 14px;
   color: var(--text-primary);
-  line-height: 1.8;
+  line-height: 1.7;
 }
 
-/* 解读 */
 .reading-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 10px;
   min-width: 0;
 }
 
 .reading-block {
-  padding: 16px;
+  padding: 12px;
   border: 1px solid var(--border-gold);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.02);
@@ -997,19 +1006,18 @@ function castDivination() {
 
 .block-title {
   font-family: var(--font-chinese);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--gold);
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .reading-block p {
-  font-size: 14px;
-  line-height: 1.9;
+  font-size: 13px;
+  line-height: 1.8;
   color: var(--text-primary);
 }
 
-/* 建议 */
 .advice-content {
   text-align: center;
   min-width: 0;
@@ -1018,23 +1026,23 @@ function castDivination() {
 }
 
 .advice-text {
-  font-size: 15px;
-  line-height: 1.9;
+  font-size: 14px;
+  line-height: 1.8;
   color: var(--text-primary);
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .advice-tags {
   display: flex;
   justify-content: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .advice-tag {
   display: inline-block;
-  padding: 6px 18px;
+  padding: 4px 16px;
   border-radius: 20px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -1054,30 +1062,29 @@ function castDivination() {
 
 .page-footer {
   text-align: center;
-  padding-top: 48px;
+  padding-top: 24px;
 }
 
 .footer-note {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-muted);
 }
 
 @media (max-width: 768px) {
-  .hero-title { font-size: 32px; }
-  .form-card { padding: 24px 16px; }
-  .num-inputs { grid-template-columns: 1fr; gap: 8px; }
-  .result-section { grid-template-columns: 1fr; }
+  .hero-title { font-size: 24px; }
+  .form-card { padding: 14px 14px; }
+  .num-inputs { grid-template-columns: 1fr; gap: 6px; }
   .reading-content { grid-template-columns: 1fr; }
   .reading-block.highlight-block { grid-column: 1; }
-  .hexagram-display { flex-direction: column; gap: 20px; }
+  .hexagram-display { flex-direction: column; gap: 16px; }
   .trigram-meta { padding-top: 0; }
-  .bar-seg { max-width: 32px; }
+  .bar-seg { max-width: 28px; }
   .hexagram-lines { align-items: flex-start; }
 }
 
 @media (max-width: 480px) {
-  .bar-seg { max-width: 24px; }
-  .hex-line { gap: 4px; }
-  .info-val { font-size: 13px; }
+  .bar-seg { max-width: 20px; }
+  .hex-line { gap: 3px; }
+  .info-val { font-size: 12px; }
 }
 </style>

@@ -12,7 +12,6 @@
           <span class="form-icon">⏰</span>
           <span>择时排盘</span>
         </div>
-        <p class="form-hint">选择公历日期与时辰，系统将根据奇门遁甲法则为你排盘解读。</p>
         <el-form class="qimen-form" @submit.prevent="calculate">
           <div class="form-row">
             <el-form-item label="年">
@@ -25,7 +24,7 @@
               <el-input-number v-model="day" :min="1" :max="31" size="large" controls-position="right" />
             </el-form-item>
             <el-form-item label="时辰">
-              <el-select v-model="hour" size="large" style="width:120px">
+              <el-select v-model="hour" size="large" style="width:100px">
                 <el-option v-for="s in shiChenList" :key="s.value" :label="s.label" :value="s.value" />
               </el-select>
             </el-form-item>
@@ -38,88 +37,90 @@
     </div>
 
     <div class="result-section" v-if="result">
-      <SectionCard title="奇门遁甲排盘" icon="☯">
-        <div class="info-bar">
-          <div class="info-item">
-            <span class="info-label">四柱</span>
-            <span class="info-val sizhu">{{ result.sizhu.year }} {{ result.sizhu.month }} {{ result.sizhu.day }} {{ result.sizhu.hour }}</span>
+      <el-tabs class="result-tabs" v-model="activeTab">
+        <el-tab-pane label="排盘" name="pan">
+          <div class="info-bar">
+            <div class="info-item">
+              <span class="info-label">四柱</span>
+              <span class="info-val sizhu">{{ result.sizhu.year }} {{ result.sizhu.month }} {{ result.sizhu.day }} {{ result.sizhu.hour }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">节气</span>
+              <span class="info-val">{{ result.term.name }} {{ result.term.yuan }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">遁局</span>
+              <span class="info-val dun" :class="result.dungeon.type === '阳' ? 'yang' : 'yin'">{{ result.dungeon.type }}遁{{ result.dungeon.number }}局</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">旬首</span>
+              <span class="info-val">{{ result.xunShou.name }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">值符</span>
+              <span class="info-val zhifu">{{ result.zhifuStar }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">值使</span>
+              <span class="info-val zhishi">{{ result.zhishiDoor }}门</span>
+            </div>
           </div>
-          <div class="info-item">
-            <span class="info-label">节气</span>
-            <span class="info-val">{{ result.term.name }} {{ result.term.yuan }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">遁局</span>
-            <span class="info-val dun" :class="result.dungeon.type === '阳' ? 'yang' : 'yin'">{{ result.dungeon.type }}遁{{ result.dungeon.number }}局</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">旬首</span>
-            <span class="info-val">{{ result.xunShou.name }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">值符</span>
-            <span class="info-val zhifu">{{ result.zhifuStar }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">值使</span>
-            <span class="info-val zhishi">{{ result.zhishiDoor }}门</span>
-          </div>
-        </div>
 
-        <div class="jiugong-wrapper">
-          <div class="jiugong-title">九宫定局</div>
-          <div class="jiugong-grid">
-            <div v-for="pos in gridOrder" :key="pos" class="jiugong-cell"
-              :class="{ center: pos === 5, [`palace-${pos}`]: true }">
-              <div class="cell-header">
-                <span class="cell-bagua">{{ palaceMap[pos].bagua }}</span>
-                <span class="cell-dir">{{ palaceMap[pos].direction }}</span>
-                <span class="cell-zhi">{{ palaceMap[pos].zhi.join('') }}</span>
-              </div>
-              <div class="cell-stems">
-                <span class="earth-stem" :class="stemClass(result.pan[pos].earth)">{{ result.pan[pos].earth || '' }}</span>
-                <span class="heaven-stem" :class="stemClass(result.pan[pos].heaven)">{{ result.pan[pos].heaven || '' }}</span>
-              </div>
-              <div class="cell-star" :class="auspiceClass(result.pan[pos].starAuspice)">
-                {{ result.pan[pos].star || '' }}
-              </div>
-              <div class="cell-door" v-if="pos !== 5" :class="auspiceClass(result.pan[pos].doorAuspice)">
-                {{ result.pan[pos].door || '' }}门
-              </div>
-              <div class="cell-spirit">
-                {{ result.pan[pos].spirit || '' }}
+          <div class="jiugong-wrapper">
+            <div class="jiugong-title">九宫定局</div>
+            <div class="jiugong-grid">
+              <div v-for="pos in gridOrder" :key="pos" class="jiugong-cell"
+                :class="{ center: pos === 5, [`palace-${pos}`]: true }">
+                <div class="cell-header">
+                  <span class="cell-bagua">{{ palaceMap[pos].bagua }}</span>
+                  <span class="cell-dir">{{ palaceMap[pos].direction }}</span>
+                  <span class="cell-zhi">{{ palaceMap[pos].zhi.join('') }}</span>
+                </div>
+                <div class="cell-stems">
+                  <span class="earth-stem" :class="stemClass(result.pan[pos].earth)">{{ result.pan[pos].earth || '' }}</span>
+                  <span class="heaven-stem" :class="stemClass(result.pan[pos].heaven)">{{ result.pan[pos].heaven || '' }}</span>
+                </div>
+                <div class="cell-star" :class="auspiceClass(result.pan[pos].starAuspice)">
+                  {{ result.pan[pos].star || '' }}
+                </div>
+                <div class="cell-door" v-if="pos !== 5" :class="auspiceClass(result.pan[pos].doorAuspice)">
+                  {{ result.pan[pos].door || '' }}门
+                </div>
+                <div class="cell-spirit">
+                  {{ result.pan[pos].spirit || '' }}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </SectionCard>
+        </el-tab-pane>
 
-      <SectionCard title="吉凶方位" icon="🧭">
-        <div class="direction-analysis">
-          <div class="dir-grid">
-            <div v-for="pos in [1,8,3,4,9,2,7,6]" :key="pos" class="dir-item"
-              :class="{ good: result.pan[pos].doorAuspice === '吉' || result.pan[pos].doorAuspice === '大吉', bad: result.pan[pos].doorAuspice === '凶' }">
-              <span class="dir-name">{{ palaceMap[pos].direction }}</span>
-              <span class="dir-door" :class="result.pan[pos].doorAuspice === '凶' ? 'bad' : 'good'">{{ result.pan[pos].door || '' }}门</span>
-              <span class="dir-star">{{ result.pan[pos].star || '' }}</span>
+        <el-tab-pane label="吉凶方位" name="direction">
+          <div class="direction-analysis">
+            <div class="dir-grid">
+              <div v-for="pos in [1,8,3,4,9,2,7,6]" :key="pos" class="dir-item"
+                :class="{ good: result.pan[pos].doorAuspice === '吉' || result.pan[pos].doorAuspice === '大吉', bad: result.pan[pos].doorAuspice === '凶' }">
+                <span class="dir-name">{{ palaceMap[pos].direction }}</span>
+                <span class="dir-door" :class="result.pan[pos].doorAuspice === '凶' ? 'bad' : 'good'">{{ result.pan[pos].door || '' }}门</span>
+                <span class="dir-star">{{ result.pan[pos].star || '' }}</span>
+              </div>
+            </div>
+            <div class="dir-summary">
+              <p><strong>吉门：</strong>
+                <span v-for="pos in [1,8,3,4,9,2,7,6]" :key="'g'+pos">
+                  <span v-if="result.pan[pos].doorAuspice === '吉' || result.pan[pos].doorAuspice === '大吉'"
+                    class="tag tag-good">{{ result.pan[pos].door }}门({{ palaceMap[pos].direction }}) </span>
+                </span>
+              </p>
+              <p><strong>凶门：</strong>
+                <span v-for="pos in [1,8,3,4,9,2,7,6]" :key="'b'+pos">
+                  <span v-if="result.pan[pos].doorAuspice === '凶'"
+                    class="tag tag-bad">{{ result.pan[pos].door }}门({{ palaceMap[pos].direction }}) </span>
+                </span>
+              </p>
             </div>
           </div>
-          <div class="dir-summary">
-            <p><strong>吉门：</strong>
-              <span v-for="pos in [1,8,3,4,9,2,7,6]" :key="'g'+pos">
-                <span v-if="result.pan[pos].doorAuspice === '吉' || result.pan[pos].doorAuspice === '大吉'"
-                  class="tag tag-good">{{ result.pan[pos].door }}门({{ palaceMap[pos].direction }}) </span>
-              </span>
-            </p>
-            <p><strong>凶门：</strong>
-              <span v-for="pos in [1,8,3,4,9,2,7,6]" :key="'b'+pos">
-                <span v-if="result.pan[pos].doorAuspice === '凶'"
-                  class="tag tag-bad">{{ result.pan[pos].door }}门({{ palaceMap[pos].direction }}) </span>
-              </span>
-            </p>
-          </div>
-        </div>
-      </SectionCard>
+        </el-tab-pane>
+      </el-tabs>
     </div>
     <TheoryInfo title="奇门遁甲" :sections="qimenTheory" :sources="qimenSources" />
   </div>
@@ -128,7 +129,6 @@
 <script setup>
 import { ref } from 'vue'
 import { calculateQiMen } from '@/data/qimen.js'
-import SectionCard from '@/components/SectionCard.vue'
 import TheoryInfo from '@/components/TheoryInfo.vue'
 
 const qimenTheory = [
@@ -144,20 +144,21 @@ const month = ref(6)
 const day = ref(18)
 const hour = ref(11)
 const result = ref(null)
+const activeTab = ref('pan')
 
 const shiChenList = [
-  { value: 0, label: '子时 23-01' },
-  { value: 1, label: '丑时 01-03' },
-  { value: 2, label: '寅时 03-05' },
-  { value: 3, label: '卯时 05-07' },
-  { value: 4, label: '辰时 07-09' },
-  { value: 5, label: '巳时 09-11' },
-  { value: 6, label: '午时 11-13' },
-  { value: 7, label: '未时 13-15' },
-  { value: 8, label: '申时 15-17' },
-  { value: 9, label: '酉时 17-19' },
-  { value: 10, label: '戌时 19-21' },
-  { value: 11, label: '亥时 21-23' },
+  { value: 0, label: '子' },
+  { value: 1, label: '丑' },
+  { value: 2, label: '寅' },
+  { value: 3, label: '卯' },
+  { value: 4, label: '辰' },
+  { value: 5, label: '巳' },
+  { value: 6, label: '午' },
+  { value: 7, label: '未' },
+  { value: 8, label: '申' },
+  { value: 9, label: '酉' },
+  { value: 10, label: '戌' },
+  { value: 11, label: '亥' },
 ]
 
 const gridOrder = [4, 9, 2, 3, 5, 7, 8, 1, 6]
@@ -173,8 +174,6 @@ const palaceMap = {
   8: { bagua: '艮', direction: '东北', zhi: ['丑', '寅'] },
   9: { bagua: '离', direction: '南', zhi: ['午'] },
 }
-
-const WU_XING_COLORS = { 木: 'green', 火: 'red', 土: 'brown', 金: 'gold', 水: 'blue' }
 
 function stemClass(stem) {
   if (!stem) return ''
@@ -209,12 +208,12 @@ calculate()
 <style scoped>
 .qimen {
   min-height: 100vh;
-  padding-bottom: 80px;
+  padding-bottom: 40px;
 }
 
 .page-hero {
   text-align: center;
-  padding: 80px 24px 40px;
+  padding: 28px 24px 16px;
   position: relative;
   overflow: hidden;
 }
@@ -224,7 +223,7 @@ calculate()
   top: 50%;
   left: 50%;
   transform: translate(-50%, -60%);
-  font-size: 200px;
+  font-size: 120px;
   opacity: 0.04;
   pointer-events: none;
   font-family: serif;
@@ -232,73 +231,73 @@ calculate()
 
 .hero-title {
   font-family: var(--font-chinese);
-  font-size: 36px;
+  font-size: 28px;
   font-weight: 700;
   background: linear-gradient(135deg, var(--gold), var(--gold-light));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin: 0 0 8px;
+  margin: 0 0 4px;
 }
 
 .hero-desc {
   font-family: var(--font-chinese);
-  font-size: 15px;
+  font-size: 13px;
   color: var(--text-secondary);
   margin: 0;
 }
 
 .form-section {
   max-width: 640px;
-  margin: 0 auto 32px;
+  margin: 0 auto 16px;
   padding: 0 24px;
 }
 
 .form-card {
   background: var(--bg-card);
   border: 1px solid var(--border-gold);
-  border-radius: 14px;
-  padding: 28px;
+  border-radius: 12px;
+  padding: 16px 20px;
 }
 
 .form-header {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   font-family: var(--font-chinese);
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .form-icon {
-  font-size: 22px;
+  font-size: 18px;
 }
 
 .form-hint {
   font-family: var(--font-chinese);
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-secondary);
-  margin: 0 0 24px;
+  margin: 0 0 12px;
 }
 
 .form-row {
   display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .form-row .el-form-item {
+  margin-bottom: 0;
   flex: 1;
-  min-width: 100px;
+  min-width: 80px;
 }
 
 .cast-btn {
   width: 100%;
-  margin-top: 20px;
-  padding: 14px;
-  font-size: 16px;
+  margin-top: 12px;
+  height: 40px;
+  font-size: 15px;
   font-family: var(--font-chinese);
   letter-spacing: 2px;
 }
@@ -307,36 +306,49 @@ calculate()
   max-width: 820px;
   margin: 0 auto;
   padding: 0 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+}
+
+.result-tabs :deep(.el-tabs__header) {
+  margin: 0 0 8px;
+}
+
+.result-tabs :deep(.el-tabs__nav-wrap) {
+  margin-bottom: 0;
+}
+
+.result-tabs :deep(.el-tabs__item) {
+  font-family: var(--font-chinese);
+  font-size: 14px;
+  height: 36px;
+  line-height: 36px;
+  padding: 0 12px;
 }
 
 .info-bar {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
-  padding: 16px;
+  gap: 10px;
+  padding: 10px 14px;
   background: var(--bg-secondary);
-  border-radius: 10px;
-  margin-bottom: 20px;
+  border-radius: 8px;
+  margin-bottom: 12px;
 }
 
 .info-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .info-label {
   font-family: var(--font-chinese);
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-secondary);
 }
 
 .info-val {
   font-family: var(--font-chinese);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-primary);
 }
@@ -347,19 +359,19 @@ calculate()
 .info-val.zhishi { color: #67c23a; }
 
 .sizhu {
-  letter-spacing: 4px;
-  font-size: 17px !important;
+  letter-spacing: 3px;
+  font-size: 15px !important;
 }
 
 .jiugong-wrapper {
-  margin-top: 8px;
+  margin-top: 4px;
 }
 
 .jiugong-title {
   font-family: var(--font-chinese);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   color: var(--text-primary);
   text-align: center;
 }
@@ -368,7 +380,7 @@ calculate()
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 2px;
-  max-width: 720px;
+  max-width: 640px;
   margin: 0 auto;
   background: var(--border-gold);
   border: 2px solid var(--border-gold);
@@ -378,12 +390,12 @@ calculate()
 
 .jiugong-cell {
   background: var(--bg-card);
-  padding: 12px 8px;
-  min-height: 120px;
+  padding: 8px 6px;
+  min-height: 90px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
   text-align: center;
   transition: background 0.2s;
 }
@@ -400,31 +412,31 @@ calculate()
 .cell-header {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   font-family: var(--font-chinese);
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-secondary);
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .cell-bagua {
   font-weight: 700;
-  font-size: 13px;
+  font-size: 12px;
   color: var(--gold);
 }
 
 .cell-zhi {
-  font-size: 10px;
+  font-size: 9px;
   opacity: 0.6;
 }
 
 .cell-stems {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   font-family: var(--font-chinese);
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
-  margin: 4px 0;
+  margin: 2px 0;
 }
 
 .earth-stem {
@@ -443,36 +455,28 @@ calculate()
 
 .cell-star {
   font-family: var(--font-chinese);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
 }
 
 .cell-door {
   font-family: var(--font-chinese);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
-  padding: 1px 8px;
+  padding: 0 6px;
   border-radius: 4px;
 }
 
 .cell-spirit {
   font-family: var(--font-chinese);
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-secondary);
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
-.auspice-good {
-  color: #67c23a;
-}
-
-.auspice-bad {
-  color: #f56c6c;
-}
-
-.auspice-neutral {
-  color: var(--text-secondary);
-}
+.auspice-good { color: #67c23a; }
+.auspice-bad { color: #f56c6c; }
+.auspice-neutral { color: var(--text-secondary); }
 
 .center .auspice-good,
 .center .auspice-bad,
@@ -487,19 +491,19 @@ calculate()
 .dir-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  margin-bottom: 20px;
+  gap: 6px;
+  margin-bottom: 12px;
 }
 
 .dir-item {
-  padding: 12px;
+  padding: 10px;
   border-radius: 8px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-gold);
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
 .dir-item.good {
@@ -513,64 +517,48 @@ calculate()
 }
 
 .dir-name {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-primary);
 }
 
-.dir-door {
-  font-size: 13px;
-  font-weight: 600;
-}
-
+.dir-door { font-size: 12px; font-weight: 600; }
 .dir-door.good { color: #67c23a; }
 .dir-door.bad { color: #f56c6c; }
 
-.dir-star {
-  font-size: 12px;
-  color: var(--text-secondary);
-}
+.dir-star { font-size: 11px; color: var(--text-secondary); }
 
 .dir-summary {
-  padding: 16px;
+  padding: 12px;
   background: var(--bg-secondary);
   border-radius: 8px;
-  line-height: 2;
+  line-height: 1.8;
 }
 
 .dir-summary p {
-  margin: 4px 0;
-  font-size: 14px;
+  margin: 2px 0;
+  font-size: 13px;
 }
 
 .tag {
   display: inline-block;
-  padding: 2px 8px;
+  padding: 1px 6px;
   border-radius: 4px;
-  font-size: 12px;
-  margin: 2px 4px;
+  font-size: 11px;
+  margin: 1px 3px;
 }
 
-.tag-good {
-  background: rgba(103, 194, 58, 0.15);
-  color: #67c23a;
-}
-
-.tag-bad {
-  background: rgba(245, 108, 108, 0.15);
-  color: #f56c6c;
-}
+.tag-good { background: rgba(103, 194, 58, 0.15); color: #67c23a; }
+.tag-bad { background: rgba(245, 108, 108, 0.15); color: #f56c6c; }
 
 @media (max-width: 640px) {
   .jiugong-cell {
-    padding: 8px 4px;
-    min-height: 90px;
+    padding: 6px 3px;
+    min-height: 70px;
   }
-  .cell-stems {
-    font-size: 14px;
-  }
-  .dir-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  .cell-stems { font-size: 13px; }
+  .dir-grid { grid-template-columns: repeat(2, 1fr); }
+  .form-row { flex-wrap: wrap; }
+  .form-row .el-form-item { min-width: 60px; }
 }
 </style>

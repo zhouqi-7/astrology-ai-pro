@@ -12,7 +12,6 @@
           <span class="form-icon">🕰️</span>
           <span>择时起课</span>
         </div>
-        <p class="form-hint">选择公历日期与时辰，系统将根据大六壬法则为你排盘。</p>
         <el-form class="liuren-form" @submit.prevent="calculate">
           <div class="form-row">
             <el-form-item label="年">
@@ -25,7 +24,7 @@
               <el-input-number v-model="day" :min="1" :max="31" size="large" controls-position="right" />
             </el-form-item>
             <el-form-item label="时辰">
-              <el-select v-model="hour" size="large" style="width:120px">
+              <el-select v-model="hour" size="large" style="width:100px">
                 <el-option v-for="s in shiChenList" :key="s.value" :label="s.label" :value="s.value" />
               </el-select>
             </el-form-item>
@@ -38,83 +37,85 @@
     </div>
 
     <div class="result-section" v-if="result">
-      <SectionCard title="大六壬排盘" icon="☰">
-        <div class="info-bar">
-          <div class="info-item">
-            <span class="info-label">四柱</span>
-            <span class="info-val sizhu">{{ result.sizhu.year }} {{ result.sizhu.month }} {{ result.sizhu.day }} {{ result.sizhu.hour }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">月将</span>
-            <span class="info-val yuejiang">{{ result.yueJiang.name }}({{ result.yueJiang.zhi }})</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">占时</span>
-            <span class="info-val">{{ result.zhanShi }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">日干寄宫</span>
-            <span class="info-val">{{ result.dayGanJiGong }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">贵人</span>
-            <span class="info-val guiren">{{ result.tianJiang.guiRen }}({{ result.tianJiang.isDay ? '昼' : '夜' }})</span>
-          </div>
-        </div>
-
-        <div class="tiandi-header">天地盘</div>
-        <div class="tiandi-grid">
-          <div v-for="pos in gridLayout" :key="pos.zhi" class="td-cell"
-            :class="{ empty: !pos.zhi }">
-            <div v-if="pos.zhi" class="td-inner">
-              <span class="td-direction">{{ pos.dir }}</span>
-              <span class="td-heaven">{{ result.diPan[pos.zhi].heaven }}</span>
-              <span class="td-earth">{{ pos.zhi }}</span>
+      <el-tabs class="result-tabs" v-model="activeTab">
+        <el-tab-pane label="天地盘" name="tiandi">
+          <div class="info-bar">
+            <div class="info-item">
+              <span class="info-label">四柱</span>
+              <span class="info-val sizhu">{{ result.sizhu.year }} {{ result.sizhu.month }} {{ result.sizhu.day }} {{ result.sizhu.hour }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">月将</span>
+              <span class="info-val yuejiang">{{ result.yueJiang.name }}({{ result.yueJiang.zhi }})</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">占时</span>
+              <span class="info-val">{{ result.zhanShi }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">日干</span>
+              <span class="info-val">{{ result.dayGanJiGong }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">贵人</span>
+              <span class="info-val guiren">{{ result.tianJiang.guiRen }}({{ result.tianJiang.isDay ? '昼' : '夜' }})</span>
             </div>
           </div>
-        </div>
-      </SectionCard>
 
-      <SectionCard title="四课" icon="📋">
-        <div class="sike-grid">
-          <div v-for="(ke, i) in result.siKe" :key="i" class="sike-item"
-            :class="{ keActive: ke.ke === '上克下', keReverse: ke.ke === '下克上' }">
-            <div class="sike-num">{{ ke.name }}</div>
-            <div class="sike-desc">{{ ke.desc }}</div>
-            <div class="sike-ke" v-if="ke.ke">{{ ke.ke }}</div>
+          <div class="tiandi-header">天地盘</div>
+          <div class="tiandi-grid">
+            <div v-for="pos in gridLayout" :key="pos.zhi" class="td-cell"
+              :class="{ empty: !pos.zhi }">
+              <div v-if="pos.zhi" class="td-inner">
+                <span class="td-direction">{{ pos.dir }}</span>
+                <span class="td-heaven">{{ result.diPan[pos.zhi].heaven }}</span>
+                <span class="td-earth">{{ pos.zhi }}</span>
+              </div>
+            </div>
           </div>
-        </div>
-      </SectionCard>
+        </el-tab-pane>
 
-      <SectionCard title="三传" icon="📿">
-        <div class="sanchuan-row">
-          <div class="sc-item sc-chu">
-            <span class="sc-label">初传</span>
-            <span class="sc-zhi">{{ result.sanChuan.chuChuan }}</span>
+        <el-tab-pane label="四课" name="sike">
+          <div class="sike-grid">
+            <div v-for="(ke, i) in result.siKe" :key="i" class="sike-item"
+              :class="{ keActive: ke.ke === '上克下', keReverse: ke.ke === '下克上' }">
+              <div class="sike-num">{{ ke.name }}</div>
+              <div class="sike-desc">{{ ke.desc }}</div>
+              <div class="sike-ke" v-if="ke.ke">{{ ke.ke }}</div>
+            </div>
           </div>
-          <span class="sc-arrow">→</span>
-          <div class="sc-item sc-zhong">
-            <span class="sc-label">中传</span>
-            <span class="sc-zhi">{{ result.sanChuan.zhongChuan }}</span>
-          </div>
-          <span class="sc-arrow">→</span>
-          <div class="sc-item sc-mo">
-            <span class="sc-label">末传</span>
-            <span class="sc-zhi">{{ result.sanChuan.moChuan }}</span>
-          </div>
-        </div>
-      </SectionCard>
+        </el-tab-pane>
 
-      <SectionCard title="十二天将" icon="🌟">
-        <div class="tianjiang-grid">
-          <div v-for="zhi in zhiList" :key="zhi" class="tj-cell">
-            <span class="tj-zhi">{{ zhi }}</span>
-            <span class="tj-jiang" v-if="result.diPan[zhi].jiang">
-              {{ result.diPan[zhi].jiang }}
-            </span>
+        <el-tab-pane label="三传" name="sanchuan">
+          <div class="sanchuan-row">
+            <div class="sc-item sc-chu">
+              <span class="sc-label">初传</span>
+              <span class="sc-zhi">{{ result.sanChuan.chuChuan }}</span>
+            </div>
+            <span class="sc-arrow">→</span>
+            <div class="sc-item sc-zhong">
+              <span class="sc-label">中传</span>
+              <span class="sc-zhi">{{ result.sanChuan.zhongChuan }}</span>
+            </div>
+            <span class="sc-arrow">→</span>
+            <div class="sc-item sc-mo">
+              <span class="sc-label">末传</span>
+              <span class="sc-zhi">{{ result.sanChuan.moChuan }}</span>
+            </div>
           </div>
-        </div>
-      </SectionCard>
+        </el-tab-pane>
+
+        <el-tab-pane label="天将" name="tianjiang">
+          <div class="tianjiang-grid">
+            <div v-for="zhi in zhiList" :key="zhi" class="tj-cell">
+              <span class="tj-zhi">{{ zhi }}</span>
+              <span class="tj-jiang" v-if="result.diPan[zhi].jiang">
+                {{ result.diPan[zhi].jiang }}
+              </span>
+            </div>
+          </div>
+        </el-tab-pane>
+      </el-tabs>
     </div>
     <TheoryInfo title="大六壬" :sections="liurenTheory" :sources="liurenSources" />
   </div>
@@ -123,7 +124,6 @@
 <script setup>
 import { ref } from 'vue'
 import { calculateLiuRen } from '@/data/liuren.js'
-import SectionCard from '@/components/SectionCard.vue'
 import TheoryInfo from '@/components/TheoryInfo.vue'
 
 const liurenTheory = [
@@ -140,20 +140,21 @@ const month = ref(6)
 const day = ref(18)
 const hour = ref(11)
 const result = ref(null)
+const activeTab = ref('tiandi')
 
 const shiChenList = [
-  { value: 0, label: '子时 23-01' },
-  { value: 1, label: '丑时 01-03' },
-  { value: 2, label: '寅时 03-05' },
-  { value: 3, label: '卯时 05-07' },
-  { value: 4, label: '辰时 07-09' },
-  { value: 5, label: '巳时 09-11' },
-  { value: 6, label: '午时 11-13' },
-  { value: 7, label: '未时 13-15' },
-  { value: 8, label: '申时 15-17' },
-  { value: 9, label: '酉时 17-19' },
-  { value: 10, label: '戌时 19-21' },
-  { value: 11, label: '亥时 21-23' },
+  { value: 0, label: '子' },
+  { value: 1, label: '丑' },
+  { value: 2, label: '寅' },
+  { value: 3, label: '卯' },
+  { value: 4, label: '辰' },
+  { value: 5, label: '巳' },
+  { value: 6, label: '午' },
+  { value: 7, label: '未' },
+  { value: 8, label: '申' },
+  { value: 9, label: '酉' },
+  { value: 10, label: '戌' },
+  { value: 11, label: '亥' },
 ]
 
 const gridLayout = [
@@ -185,12 +186,12 @@ calculate()
 <style scoped>
 .liuren {
   min-height: 100vh;
-  padding-bottom: 80px;
+  padding-bottom: 40px;
 }
 
 .page-hero {
   text-align: center;
-  padding: 80px 24px 40px;
+  padding: 28px 24px 16px;
   position: relative;
   overflow: hidden;
 }
@@ -200,7 +201,7 @@ calculate()
   top: 50%;
   left: 50%;
   transform: translate(-50%, -60%);
-  font-size: 200px;
+  font-size: 120px;
   opacity: 0.04;
   pointer-events: none;
   font-family: serif;
@@ -208,73 +209,73 @@ calculate()
 
 .hero-title {
   font-family: var(--font-chinese);
-  font-size: 36px;
+  font-size: 28px;
   font-weight: 700;
   background: linear-gradient(135deg, var(--gold), var(--gold-light));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin: 0 0 8px;
+  margin: 0 0 4px;
 }
 
 .hero-desc {
   font-family: var(--font-chinese);
-  font-size: 15px;
+  font-size: 13px;
   color: var(--text-secondary);
   margin: 0;
 }
 
 .form-section {
   max-width: 640px;
-  margin: 0 auto 32px;
+  margin: 0 auto 16px;
   padding: 0 24px;
 }
 
 .form-card {
   background: var(--bg-card);
   border: 1px solid var(--border-gold);
-  border-radius: 14px;
-  padding: 28px;
+  border-radius: 12px;
+  padding: 16px 20px;
 }
 
 .form-header {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   font-family: var(--font-chinese);
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .form-icon {
-  font-size: 22px;
+  font-size: 18px;
 }
 
 .form-hint {
   font-family: var(--font-chinese);
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-secondary);
-  margin: 0 0 24px;
+  margin: 0 0 12px;
 }
 
 .form-row {
   display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .form-row .el-form-item {
+  margin-bottom: 0;
   flex: 1;
-  min-width: 100px;
+  min-width: 80px;
 }
 
 .cast-btn {
   width: 100%;
-  margin-top: 20px;
-  padding: 14px;
-  font-size: 16px;
+  margin-top: 12px;
+  height: 40px;
+  font-size: 15px;
   font-family: var(--font-chinese);
   letter-spacing: 2px;
 }
@@ -283,43 +284,56 @@ calculate()
   max-width: 820px;
   margin: 0 auto;
   padding: 0 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+}
+
+.result-tabs :deep(.el-tabs__header) {
+  margin: 0 0 8px;
+}
+
+.result-tabs :deep(.el-tabs__nav-wrap) {
+  margin-bottom: 0;
+}
+
+.result-tabs :deep(.el-tabs__item) {
+  font-family: var(--font-chinese);
+  font-size: 14px;
+  height: 36px;
+  line-height: 36px;
+  padding: 0 12px;
 }
 
 .info-bar {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
-  padding: 16px;
+  gap: 10px;
+  padding: 10px 14px;
   background: var(--bg-secondary);
-  border-radius: 10px;
-  margin-bottom: 20px;
+  border-radius: 8px;
+  margin-bottom: 12px;
 }
 
 .info-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .info-label {
   font-family: var(--font-chinese);
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-secondary);
 }
 
 .info-val {
   font-family: var(--font-chinese);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-primary);
 }
 
 .sizhu {
-  letter-spacing: 4px;
-  font-size: 17px !important;
+  letter-spacing: 3px;
+  font-size: 15px !important;
 }
 
 .yuejiang { color: #e6a23c; }
@@ -327,9 +341,9 @@ calculate()
 
 .tiandi-header {
   font-family: var(--font-chinese);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   color: var(--text-primary);
   text-align: center;
 }
@@ -338,13 +352,13 @@ calculate()
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 2px;
-  max-width: 560px;
+  max-width: 480px;
   margin: 0 auto;
 }
 
 .td-cell {
   aspect-ratio: 1;
-  min-height: 70px;
+  min-height: 60px;
 }
 
 .td-cell.empty {
@@ -370,14 +384,14 @@ calculate()
   top: 3px;
   left: 6px;
   font-family: var(--font-chinese);
-  font-size: 9px;
+  font-size: 8px;
   color: var(--text-secondary);
   opacity: 0.6;
 }
 
 .td-heaven {
   font-family: var(--font-chinese);
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--gold);
   line-height: 1.2;
@@ -385,7 +399,7 @@ calculate()
 
 .td-earth {
   font-family: var(--font-chinese);
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-secondary);
   opacity: 0.7;
 }
@@ -393,18 +407,18 @@ calculate()
 .sike-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  gap: 6px;
 }
 
 .sike-item {
-  padding: 16px 12px;
+  padding: 12px 8px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-gold);
   border-radius: 8px;
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   font-family: var(--font-chinese);
 }
 
@@ -419,20 +433,20 @@ calculate()
 }
 
 .sike-num {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--gold);
 }
 
 .sike-desc {
-  font-size: 15px;
+  font-size: 14px;
   color: var(--text-primary);
 }
 
 .sike-ke {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
-  padding: 2px 8px;
+  padding: 1px 6px;
   border-radius: 4px;
   display: inline-block;
   margin: 0 auto;
@@ -445,8 +459,8 @@ calculate()
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  padding: 20px;
+  gap: 12px;
+  padding: 16px;
   font-family: var(--font-chinese);
 }
 
@@ -455,7 +469,7 @@ calculate()
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  padding: 16px 24px;
+  padding: 12px 20px;
   border-radius: 10px;
   border: 1px solid var(--border-gold);
 }
@@ -465,12 +479,12 @@ calculate()
 .sc-mo { background: rgba(103, 194, 58, 0.1); border-color: #67c23a; }
 
 .sc-label {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-secondary);
 }
 
 .sc-zhi {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 700;
 }
 
@@ -479,36 +493,36 @@ calculate()
 .sc-mo .sc-zhi { color: #67c23a; }
 
 .sc-arrow {
-  font-size: 24px;
+  font-size: 20px;
   color: var(--text-secondary);
 }
 
 .tianjiang-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 6px;
+  gap: 4px;
 }
 
 .tj-cell {
-  padding: 12px 8px;
+  padding: 10px 6px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-gold);
   border-radius: 8px;
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   font-family: var(--font-chinese);
 }
 
 .tj-zhi {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--gold);
 }
 
 .tj-jiang {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-primary);
 }
 
@@ -517,5 +531,7 @@ calculate()
   .tianjiang-grid { grid-template-columns: repeat(3, 1fr); }
   .sanchuan-row { flex-direction: column; }
   .sc-arrow { transform: rotate(90deg); }
+  .form-row { flex-wrap: wrap; }
+  .form-row .el-form-item { min-width: 60px; }
 }
 </style>
