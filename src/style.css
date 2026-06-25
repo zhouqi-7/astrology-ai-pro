@@ -177,3 +177,8 @@ body::before {
 @media (max-width: 768px) {
   html { font-size: 14px; }
 }
+
+/* ===== Font scaling via root zoom (like browser native zoom) ===== */
+:root[data-font-scale="sm"] { zoom: 0.875; }
+:root[data-font-scale="lg"] { zoom: 1.125; }
+:root[data-font-scale="xl"] { zoom: 1.25; }

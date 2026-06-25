@@ -8,25 +8,35 @@
       </router-link>
       <div class="nav-center">
         <div class="nav-links">
-          <router-link to="/" class="nav-link" active-class="nav-link-active">
-            <el-icon><HomeFilled /></el-icon>
-            <span>八字命理</span>
+          <router-link to="/" custom v-slot="{ isActive, navigate }">
+            <a class="nav-link" :class="{ 'nav-link-active': isActive || $route.path === '/reading' }" @click="navigate">
+              <el-icon><HomeFilled /></el-icon>
+              <span>八字命理</span>
+            </a>
           </router-link>
-          <router-link to="/meihua" class="nav-link" active-class="nav-link-active">
-            <el-icon><MagicStick /></el-icon>
-            <span>梅花易数</span>
+          <router-link to="/meihua" custom v-slot="{ isActive, navigate }">
+            <a class="nav-link" :class="{ 'nav-link-active': isActive }" @click="navigate">
+              <el-icon><MagicStick /></el-icon>
+              <span>梅花易数</span>
+            </a>
           </router-link>
-          <router-link to="/qimen" class="nav-link" active-class="nav-link-active">
-            <el-icon><Guide /></el-icon>
-            <span>奇门遁甲</span>
+          <router-link to="/qimen" custom v-slot="{ isActive, navigate }">
+            <a class="nav-link" :class="{ 'nav-link-active': isActive }" @click="navigate">
+              <el-icon><Guide /></el-icon>
+              <span>奇门遁甲</span>
+            </a>
           </router-link>
-          <router-link to="/liuren" class="nav-link" active-class="nav-link-active">
-            <el-icon><Coin /></el-icon>
-            <span>大六壬</span>
+          <router-link to="/liuren" custom v-slot="{ isActive, navigate }">
+            <a class="nav-link" :class="{ 'nav-link-active': isActive }" @click="navigate">
+              <el-icon><Coin /></el-icon>
+              <span>大六壬</span>
+            </a>
           </router-link>
-          <router-link to="/taiyi" class="nav-link" active-class="nav-link-active">
-            <el-icon><Star /></el-icon>
-            <span>太乙神数</span>
+          <router-link to="/taiyi" custom v-slot="{ isActive, navigate }">
+            <a class="nav-link" :class="{ 'nav-link-active': isActive }" @click="navigate">
+              <el-icon><Star /></el-icon>
+              <span>太乙神数</span>
+            </a>
           </router-link>
         </div>
       </div>
@@ -45,6 +55,25 @@
                 <span class="theme-dot" :style="{ background: t.color }" />
                 <span>{{ t.label }}</span>
                 <el-icon v-if="currentTheme === t.id"><Check /></el-icon>
+              </button>
+            </div>
+          </transition>
+        </div>
+
+        <div class="font-switcher" ref="fontRef">
+          <button class="theme-btn" @click="toggleFontMenu">
+            <el-icon><Aim /></el-icon>
+            <span class="theme-label">{{ fontScaleLabel }}</span>
+          </button>
+          <transition name="dropdown">
+            <div v-if="showFontMenu" class="theme-menu">
+              <button v-for="f in fontOptions" :key="f.id"
+                class="theme-option"
+                :class="{ active: fontScale === f.id }"
+                @click="setFontScale(f.id)">
+                <span>{{ f.label }}</span>
+                <span class="font-desc">{{ f.desc }}</span>
+                <el-icon v-if="fontScale === f.id"><Check /></el-icon>
               </button>
             </div>
           </transition>
@@ -84,6 +113,17 @@ const currentTheme = ref('dark-contrast')
 const showThemeMenu = ref(false)
 const themeRef = ref(null)
 
+const fontOptions = [
+  { id: 'sm', label: '小', desc: '0.875×' },
+  { id: 'md', label: '中', desc: '1×' },
+  { id: 'lg', label: '大', desc: '1.125×' },
+  { id: 'xl', label: '超大', desc: '1.25×' },
+]
+const fontScale = ref('md')
+const showFontMenu = ref(false)
+const fontRef = ref(null)
+const fontScaleLabel = ref('中')
+
 function loadTheme() {
   const saved = localStorage.getItem('astrology-theme') || 'dark-contrast'
   currentTheme.value = saved
@@ -99,16 +139,41 @@ function setTheme(id) {
 
 function toggleThemeMenu() {
   showThemeMenu.value = !showThemeMenu.value
+  if (showThemeMenu.value) showFontMenu.value = false
+}
+
+function loadFontScale() {
+  const saved = localStorage.getItem('astrology-font-scale') || 'md'
+  fontScale.value = saved
+  fontScaleLabel.value = fontOptions.find(f => f.id === saved)?.label || '中'
+  document.documentElement.setAttribute('data-font-scale', saved)
+}
+
+function setFontScale(id) {
+  fontScale.value = id
+  fontScaleLabel.value = fontOptions.find(f => f.id === id)?.label || '中'
+  document.documentElement.setAttribute('data-font-scale', id)
+  localStorage.setItem('astrology-font-scale', id)
+  showFontMenu.value = false
+}
+
+function toggleFontMenu() {
+  showFontMenu.value = !showFontMenu.value
+  if (showFontMenu.value) showThemeMenu.value = false
 }
 
 function handleClickOutside(e) {
   if (themeRef.value && !themeRef.value.contains(e.target)) {
     showThemeMenu.value = false
   }
+  if (fontRef.value && !fontRef.value.contains(e.target)) {
+    showFontMenu.value = false
+  }
 }
 
 onMounted(() => {
   loadTheme()
+  loadFontScale()
   document.addEventListener('click', handleClickOutside)
 })
 
@@ -295,6 +360,17 @@ onUnmounted(() => {
 .theme-option .el-icon {
   margin-left: auto;
   font-size: 14px;
+}
+
+.font-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-left: 4px;
+}
+
+.font-switcher {
+  position: relative;
+  margin-left: 8px;
 }
 
 .theme-dot {
